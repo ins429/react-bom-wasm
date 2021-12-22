@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import Umd from "./Umd";
+
+const umdMode = true;
 
 function App() {
   const [name, setName] = useState("");
@@ -6,17 +9,22 @@ function App() {
   const [jsonValue, setJsonValue] = useState("");
 
   useEffect(() => {
-    console.log("window.blazor", window.Blazor);
-    window.Blazor.start({
-      loadBootResource: function (type, name, defaultUri, integrity) {
-        console.log("defaultUri", defaultUri);
-        if (defaultUri.indexOf("localhost") > 0) {
-          return "https://localhost:5001/_framework/dotnet.6.0.1.ynjylm5yl3.js";
-        }
-        return `https://localhost:5001/${defaultUri}`;
-      },
-    });
+    if (!umdMode) {
+      window.Blazor.start({
+        loadBootResource: function (type, name, defaultUri, integrity) {
+          console.log("defaultUri", defaultUri);
+          if (defaultUri.indexOf("localhost") > 0) {
+            return "https://localhost:5001/_framework/dotnet.6.0.1.ynjylm5yl3.js";
+          }
+          return `https://localhost:5001/${defaultUri}`;
+        },
+      });
+    }
   }, []);
+
+  if (umdMode) {
+    return <Umd />;
+  }
 
   return (
     <div className="App">
